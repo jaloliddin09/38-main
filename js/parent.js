@@ -43,11 +43,11 @@ window.clearLogoUrl = async function() {
   toast('✅ Logo o\'chirildi');
 };
 window.saveBgAnim = async function() {
-  const val = document.getElementById('set-bg-anim').checked;
+  var val = document.getElementById('set-bg-anim').checked;
   DATA.settings.bgAnim = val;
   try { await fbUpdate('settings', { bgAnim: val }); } catch(e) { saveLocal(); }
   applySettings();
-  toast(val ? '🎬 Animatsiya yoqildi' : '⏹️ Animatsiya o\'chirildi');
+  toast(val ? '\uD83C\uDF89 Fon+Animatsiya yoqildi' : '\u23F9\uFE0F Faqat fon rasmi');
 };
 
 window.saveLoginTitle = async function() {

@@ -120,9 +120,16 @@
   function draw() {
     ctx.clearRect(0, 0, W, H);
 
-    // ── Background: fon rasmi bo'lsa shaffof, bo'lmasa qoramtir ──
+    // Fon rasmi bormi?
     var hasBgUrl = !!(window.DATA && window.DATA.settings && window.DATA.settings.bgUrl);
-    if (!hasBgUrl) {
+
+    if (hasBgUrl) {
+      // Fon rasmi bor — canvas shaffof, faqat detallar va efektlar chiziladi
+      // Yengil qoramtir overlay — animatsiya ko'zga yaqqolroq ko'rinsin
+      ctx.fillStyle = 'rgba(5, 2, 20, 0.35)';
+      ctx.fillRect(0, 0, W, H);
+    } else {
+      // Fon rasmi yo'q — canvas o'zi to'q fon chizadi
       var bg = ctx.createRadialGradient(CENTER_X, CENTER_Y, 0, CENTER_X, H * 0.6, Math.max(W, H) * 0.85);
       bg.addColorStop(0,   '#1a083a');
       bg.addColorStop(0.4, '#0f0528');
