@@ -23,11 +23,12 @@ a{color:var(--blue);text-decoration:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ===== LOGIN ===== */
-#login{min-height:100vh;background:linear-gradient(135deg,#0F172A 0%,#1E1B4B 50%,#0F172A 100%);display:none;align-items:center;justify-content:center;padding:20px}
+#login{min-height:100vh;background:transparent;display:none;align-items:center;justify-content:center;padding:20px}
 .login-card{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:36px 28px;width:100%;max-width:390px;box-shadow:var(--sh);animation:fadeUp .4s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .login-logo{text-align:center;margin-bottom:24px}
-.login-logo .icon{width:64px;height:64px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:16px;display:inline-flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:12px;box-shadow:0 8px 24px rgba(59,130,246,.4)}
+.login-logo .icon{width:64px;height:64px;background:linear-gradient(135deg,var(--blue),var(--purple));background-image:linear-gradient(135deg,var(--blue),var(--purple));border-radius:16px;display:inline-flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:12px;box-shadow:0 8px 24px rgba(59,130,246,.4);overflow:hidden;flex-shrink:0}
+.login-logo .icon.has-logo,.app-header .brand .icon.has-logo{background-image:var(--logo-url)!important;background-size:cover!important;background-position:center!important;background-color:transparent!important;font-size:0!important}
 .login-logo h1{font-size:1.5rem;font-weight:800;color:var(--text)}
 .login-logo p{color:var(--text2);font-size:.85rem;margin-top:3px}
 .login-tabs{display:flex;background:var(--bg3);border-radius:10px;padding:3px;margin-bottom:20px;gap:3px}
@@ -141,7 +142,7 @@ a{color:var(--blue);text-decoration:none}
 #admin-app,#parent-app{display:none;min-height:100vh;flex-direction:column}
 .app-header{background:var(--bg2);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:100;flex-shrink:0}
 .app-header .brand{display:flex;align-items:center;gap:8px}
-.app-header .brand .icon{width:32px;height:32px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+.app-header .brand .icon{width:32px;height:32px;background:linear-gradient(135deg,var(--blue),var(--purple));background-image:linear-gradient(135deg,var(--blue),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;overflow:hidden;flex-shrink:0}
 .app-header .brand span{font-weight:700;font-size:1rem;color:var(--text)}
 .app-header .hright{display:flex;align-items:center;gap:8px}
 .badge{background:rgba(59,130,246,.2);color:var(--blue);border-radius:20px;padding:4px 10px;font-size:.75rem;font-weight:600}

@@ -2,88 +2,107 @@
 // APP INIT
 // ============================================================
 function applySettings() {
-  const n = DATA.settings.siteName || 'Jaloliddin Math';
-  const loginTitle = DATA.settings.loginTitle || n;
-  const ver = DATA.settings.appVersion || 'v1.4';
-  document.title = n;
-  const el1 = document.getElementById('admin-site-name');
-  const el2 = document.getElementById('parent-site-name');
-  const el3 = document.getElementById('guest-site-name');
-  const lt  = document.getElementById('login-title');
-  const lv  = document.getElementById('login-version');
-  if (el1) el1.textContent = n;
-  if (el2) el2.textContent = n;
-  if (el3) el3.textContent = n;
-  if (lt) lt.textContent = loginTitle;
-  if (lv)  lv.textContent  = 'Baholash tizimi ' + ver;
-  const si = document.getElementById('set-name');
-  if (si) si.value = n;
-  const ss = document.getElementById('set-schedule');
-  if (ss) ss.value = DATA.settings.schedule || '';
-  const sn = document.getElementById('set-nextdt');
-  if (sn) sn.value = DATA.settings.nextClassDt || '';
-  renderGroupScheduleSettings();
-  const slt = document.getElementById('set-login-title');
-  if (slt) slt.value = DATA.settings.loginTitle || '';
-  const sv = document.getElementById('set-version');
-  if (sv) sv.value = DATA.settings.appVersion || '';
-  // Scoring limits
-  const uvMax   = DATA.settings.uvMax   || 50;
-  const mtMax   = DATA.settings.mtMax   || 25;
-  const faolMax = DATA.settings.faolMax || 25;
-  const suv = document.getElementById('set-uv-max');
-  if (suv) suv.value = uvMax;
-  const smt = document.getElementById('set-mt-max');
-  if (smt) smt.value = mtMax;
-  const sfaol = document.getElementById('set-faol-max');
-  if (sfaol) sfaol.value = faolMax;
-  const duvEl = document.getElementById('set-uv-desc');
-  if (duvEl) duvEl.textContent = `Hozir: ${uvMax} ball`;
-  const dmtEl = document.getElementById('set-mt-desc');
-  if (dmtEl) dmtEl.textContent = `Hozir: ${mtMax} ball`;
-  const dfaolEl = document.getElementById('set-faol-desc');
-  if (dfaolEl) dfaolEl.textContent = `Hozir: ${faolMax} ball · Jami: ${uvMax+mtMax+faolMax}`;
-  // Fon rasmi
-  const bgUrl = DATA.settings.bgUrl || '';
-  if (bgUrl) {
-    document.body.style.backgroundImage = `url(${bgUrl})`;
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundAttachment = 'fixed';
-    document.body.style.backgroundPosition = 'center';
-  } else {
-    document.body.style.backgroundImage = '';
-  }
-  const sbg = document.getElementById('set-bg-url');
-  if (sbg) sbg.value = bgUrl;
+  var s = DATA.settings || {};
+  var n          = s.siteName   || 'Jaloliddin Math';
+  var loginTitle = s.loginTitle || n;
+  var ver        = s.appVersion || 'v1.4';
 
-  // Logo rasmi
-  const logoUrl = DATA.settings.logoUrl || '';
-  const logoIconIds = ['login-icon', 'admin-logo-icon', 'parent-logo-icon'];
-  logoIconIds.forEach(function(id) {
-    const el = document.getElementById(id);
+  // Sarlavhalar
+  document.title = n;
+  ['admin-site-name','parent-site-name','guest-site-name','guest-site-name2'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.textContent = n;
+  });
+  var lt = document.getElementById('login-title');   if (lt)  lt.textContent  = loginTitle;
+  var lv = document.getElementById('login-version'); if (lv)  lv.textContent  = 'Baholash tizimi ' + ver;
+  var si = document.getElementById('set-name');      if (si)  si.value        = n;
+  var ss = document.getElementById('set-schedule');  if (ss)  ss.value        = s.schedule || '';
+  var sn = document.getElementById('set-nextdt');    if (sn)  sn.value        = s.nextClassDt || '';
+  renderGroupScheduleSettings();
+  var slt = document.getElementById('set-login-title'); if (slt) slt.value = s.loginTitle || '';
+  var sv  = document.getElementById('set-version');     if (sv)  sv.value  = s.appVersion || '';
+  var pan = document.getElementById('pwa-app-name');    if (pan) pan.textContent = n;
+
+  // Ball chegaralari
+  var uvMax = s.uvMax || 50, mtMax = s.mtMax || 25, faolMax = s.faolMax || 25;
+  var suv = document.getElementById('set-uv-max');   if (suv) suv.value = uvMax;
+  var smt = document.getElementById('set-mt-max');   if (smt) smt.value = mtMax;
+  var sfa = document.getElementById('set-faol-max'); if (sfa) sfa.value = faolMax;
+  var du  = document.getElementById('set-uv-desc');  if (du)  du.textContent  = 'Hozir: ' + uvMax + ' ball';
+  var dm  = document.getElementById('set-mt-desc');  if (dm)  dm.textContent  = 'Hozir: ' + mtMax + ' ball';
+  var df  = document.getElementById('set-faol-desc');if (df)  df.textContent  = 'Hozir: ' + faolMax + ' ball \xb7 Jami: ' + (uvMax+mtMax+faolMax);
+
+  // ── LOGO ─────────────────────────────────────────────────
+  var logoUrl = s.logoUrl || '';
+  var logoIds = ['login-icon','admin-logo-icon','parent-logo-icon','guest-logo-icon'];
+  logoIds.forEach(function(id) {
+    var el = document.getElementById(id);
     if (!el) return;
     if (logoUrl) {
-      el.style.background = 'url(' + logoUrl + ') center/cover no-repeat';
-      el.style.fontSize = '0';
-      el.style.color = 'transparent';
+      el.style.backgroundImage    = 'url(' + logoUrl + ')';
+      el.style.backgroundSize     = 'cover';
+      el.style.backgroundPosition = 'center';
+      el.style.backgroundRepeat   = 'no-repeat';
+      el.style.fontSize           = '0';
+      el.style.color              = 'transparent';
     } else {
-      el.style.background = '';
-      el.style.fontSize = '';
-      el.style.color = '';
+      el.style.backgroundImage    = '';
+      el.style.backgroundSize     = '';
+      el.style.backgroundPosition = '';
+      el.style.backgroundRepeat   = '';
+      el.style.fontSize           = '';
+      el.style.color              = '';
     }
   });
-  const slgo = document.getElementById('set-logo-url');
+  var slgo = document.getElementById('set-logo-url');
   if (slgo) slgo.value = logoUrl;
 
-  // Canvas animatsiya
-  const bgAnim = DATA.settings.bgAnim !== false; // default: yoqiq
-  const animChk = document.getElementById('set-bg-anim');
-  if (animChk) animChk.checked = bgAnim;
-  const canvas = document.getElementById('bg-canvas');
+  // ── FON + ANIMATSIYA ─────────────────────────────────────
+  var bgUrl  = s.bgUrl  || '';
+  var bgAnim = (s.bgAnim !== false);
+  var canvas = document.getElementById('bg-canvas');
+  var screens = ['login','guest-app','admin-app','parent-app'];
+
+  if (bgUrl) {
+    // Fon rasmi bor -> body ga qo'yamiz
+    document.body.style.backgroundImage      = 'url(' + bgUrl + ')';
+    document.body.style.backgroundSize       = 'cover';
+    document.body.style.backgroundAttachment = 'fixed';
+    document.body.style.backgroundPosition   = 'center';
+    document.body.style.backgroundRepeat     = 'no-repeat';
+    document.body.style.backgroundColor      = '#0F172A';
+    // Ekranlarni shaffof qilamiz — body fonini ko'rsatadi
+    screens.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.style.background = 'transparent';
+      el.style.backgroundColor = 'transparent';
+    });
+  } else {
+    // Fon rasmi yo'q
+    document.body.style.backgroundImage   = '';
+    document.body.style.backgroundSize    = '';
+    document.body.style.backgroundAttachment = '';
+    document.body.style.backgroundPosition   = '';
+    document.body.style.backgroundRepeat  = '';
+    document.body.style.backgroundColor   = '';
+    document.body.style.background        = '';
+    screens.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.style.background = '';
+      el.style.backgroundColor = '';
+    });
+    // Animatsiya o'chiq + fon yo'q -> qoramtir
+    if (!bgAnim) document.body.style.background = '#0F172A';
+  }
+
+  // Canvas ko'rsatish/yashirish
   if (canvas) canvas.style.display = bgAnim ? 'block' : 'none';
 
-  // Update pwa-app-name
-  const pan = document.getElementById('pwa-app-name');
-  if (pan) pan.textContent = n;
+  var animChk = document.getElementById('set-bg-anim');
+  if (animChk) animChk.checked = bgAnim;
+  var sbg = document.getElementById('set-bg-url');
+  if (sbg) sbg.value = bgUrl;
+
   if (typeof applyLabels === 'function') applyLabels();
 }

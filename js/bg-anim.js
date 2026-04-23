@@ -120,14 +120,17 @@
   function draw() {
     ctx.clearRect(0, 0, W, H);
 
-    // ── Background gradient ───────────────────────────────
-    var bg = ctx.createRadialGradient(CENTER_X, CENTER_Y, 0, CENTER_X, H * 0.6, Math.max(W, H) * 0.85);
-    bg.addColorStop(0,   '#1a083a');
-    bg.addColorStop(0.4, '#0f0528');
-    bg.addColorStop(0.8, '#080018');
-    bg.addColorStop(1,   '#030010');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, W, H);
+    // ── Background: fon rasmi bo'lsa shaffof, bo'lmasa qoramtir ──
+    var hasBgUrl = !!(window.DATA && window.DATA.settings && window.DATA.settings.bgUrl);
+    if (!hasBgUrl) {
+      var bg = ctx.createRadialGradient(CENTER_X, CENTER_Y, 0, CENTER_X, H * 0.6, Math.max(W, H) * 0.85);
+      bg.addColorStop(0,   '#1a083a');
+      bg.addColorStop(0.4, '#0f0528');
+      bg.addColorStop(0.8, '#080018');
+      bg.addColorStop(1,   '#030010');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+    }
 
     // ── Neural flow lines ─────────────────────────────────
     lines.forEach(function (li) {
