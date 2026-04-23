@@ -58,22 +58,19 @@ function applySettings() {
 
   // Logo rasmi
   const logoUrl = DATA.settings.logoUrl || '';
-  const logoIds = [
-    { img: 'login-logo-img',  emoji: 'login-logo-emoji' },
-    { img: 'admin-logo-img',  emoji: 'admin-logo-emoji' },
-    { img: 'parent-logo-img', emoji: 'parent-logo-emoji' }
-  ];
-  logoIds.forEach(function(ids) {
-    const imgEl   = document.getElementById(ids.img);
-    const emojEl  = document.getElementById(ids.emoji);
-    if (!imgEl) return;
+  const logoIconIds = ['login-icon', 'admin-logo-icon', 'parent-logo-icon'];
+  logoIconIds.forEach(function(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
     if (logoUrl) {
-      imgEl.src = logoUrl;
-      imgEl.style.display = 'block';
-      if (emojEl) emojEl.style.display = 'none';
+      el.style.backgroundImage = 'url(' + logoUrl + ')';
+      el.style.backgroundSize = 'cover';
+      el.style.backgroundPosition = 'center';
+      el.style.backgroundRepeat = 'no-repeat';
+      el.style.fontSize = '0'; // emoji yashirish
     } else {
-      imgEl.style.display = 'none';
-      if (emojEl) emojEl.style.display = '';
+      el.style.backgroundImage = '';
+      el.style.fontSize = '';
     }
   });
   const slgo = document.getElementById('set-logo-url');
