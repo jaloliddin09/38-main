@@ -63,14 +63,13 @@ function applySettings() {
     const el = document.getElementById(id);
     if (!el) return;
     if (logoUrl) {
-      el.style.backgroundImage = 'url(' + logoUrl + ')';
-      el.style.backgroundSize = 'cover';
-      el.style.backgroundPosition = 'center';
-      el.style.backgroundRepeat = 'no-repeat';
-      el.style.fontSize = '0'; // emoji yashirish
+      el.style.background = 'url(' + logoUrl + ') center/cover no-repeat';
+      el.style.fontSize = '0';
+      el.style.color = 'transparent';
     } else {
-      el.style.backgroundImage = '';
+      el.style.background = '';
       el.style.fontSize = '';
+      el.style.color = '';
     }
   });
   const slgo = document.getElementById('set-logo-url');
