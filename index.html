@@ -17,11 +17,13 @@
 <!-- ╔═══════════════════════════╗ -->
 <!-- ║  CSS — css/ papkasida    ║ -->
 <!-- ╚═══════════════════════════╝ -->
-<link rel="stylesheet" href="css/main.css">    <!-- ranglar, layout, komponentlar -->
-<link rel="stylesheet" href="css/samara.css">  <!-- samara/performance dizayn -->
-<link rel="stylesheet" href="css/posts.css">   <!-- xabarlar / e'lonlar dizayn -->
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/samara.css">
+<link rel="stylesheet" href="css/posts.css">
 </head>
 <body>
+<canvas id="bg-canvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;display:block"></canvas>
+<script src="js/bg-anim.js"></script>
 
 <!-- === html/loading.html === -->
 <!-- ===== LOADING ===== -->
@@ -69,7 +71,10 @@
 <div id="login" style="display:none;align-items:center;justify-content:center">
   <div class="login-card">
     <div class="login-logo">
-      <div class="icon" id="login-icon" onclick="iconSecretClick()" style="cursor:default;user-select:none">📐</div>
+      <div class="icon" id="login-icon" onclick="iconSecretClick()" style="cursor:default;user-select:none;padding:0;overflow:hidden">
+        <img id="login-logo-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:inherit">
+        <span id="login-logo-emoji">📐</span>
+      </div>
       <h1 id="login-title">Jaloliddin Math</h1>
       <p id="login-version">Baholash tizimi v1.4</p>
     </div>
@@ -118,7 +123,10 @@
   <!-- Header -->
   <header style="background:linear-gradient(135deg,#1E1B4B,#0F172A);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0">
     <div style="display:flex;align-items:center;gap:9px">
-      <div style="width:32px;height:32px;background:linear-gradient(135deg,#8B5CF6,#3B82F6);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem">📐</div>
+      <div class="icon" id="admin-logo-icon" style="width:32px;height:32px;background:linear-gradient(135deg,#8B5CF6,#3B82F6);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;overflow:hidden;flex-shrink:0">
+          <img id="admin-logo-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover">
+          <span id="admin-logo-emoji">📐</span>
+        </div>
       <span id="guest-site-name" style="color:#fff;font-size:1rem;font-weight:800">MY Math!</span>
     </div>
     <button onclick="logout()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.75);border-radius:8px;padding:6px 12px;font-size:.78rem;cursor:pointer;font-weight:600">← Chiqish</button>
@@ -459,6 +467,25 @@
           </div>
         </div>
         <div class="setting-row">
+          <div class="sr-info"><div class="sr-title">🖼️ Logo rasmi URL</div><div class="sr-desc">Ilovaning icon o'rniga ko'rsatiladigan rasm</div></div>
+          <div class="sr-right" style="flex-direction:column;align-items:flex-end;gap:4px">
+            <input class="sr-inp" id="set-logo-url" placeholder="https://res.cloudinary.com/...">
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-sm btn-success" onclick="saveLogoUrl()">✓ Saqlash</button>
+              <button class="btn btn-sm btn-ghost" onclick="clearLogoUrl()">✕ O'chirish</button>
+            </div>
+          </div>
+        </div>
+        <div class="setting-row">
+          <div class="sr-info"><div class="sr-title">🎬 Animatsiya foni</div><div class="sr-desc">Neon to'lqinli orqa fon (canvas)</div></div>
+          <div class="sr-right">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+              <input type="checkbox" id="set-bg-anim" onchange="saveBgAnim()" style="width:18px;height:18px;accent-color:#8B5CF6">
+              <span style="font-size:.85rem;color:var(--text2)">Yoqish</span>
+            </label>
+          </div>
+        </div>
+        <div class="setting-row">
           <div class="sr-info"><div class="sr-title">Admin paroli</div><div class="sr-desc">Kirish paroli</div></div>
           <div class="sr-right"><input type="password" class="sr-inp" id="set-pass" placeholder="Yangi parol"><button class="btn btn-sm btn-success" onclick="saveSettingPass()">✓</button></div>
         </div>
@@ -618,8 +645,10 @@
 <div id="parent-app" style="display:none;flex-direction:column;min-height:100vh">
   <header class="app-header">
     <div class="brand">
-      <div class="icon">📐</div>
-      <span id="parent-site-name">Jaloliddin Math</span>
+      <div class="icon" id="parent-logo-icon" style="overflow:hidden">
+          <img id="parent-logo-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:inherit">
+          <span id="parent-logo-emoji">📐</span>
+        </div>
     </div>
     <div class="hright">
       <button id="parent-install-hdr-btn" class="install-btn" onclick="pwaInstallClick()">📲</button>

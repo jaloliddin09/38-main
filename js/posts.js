@@ -120,6 +120,10 @@ window.toggleDay = function(gid, dayNum, btn) {
 };
 
 // Keyingi dars sanasini hisoblash (classDays + classTime asosida)
+function toLocalISOStr(d) {
+  const p = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+}
 function computeNextClassDt(classDays, classTime) {
   if (!classDays || !classDays.length || !classTime) return null;
   const [hh, mm] = classTime.split(':').map(Number);
@@ -168,7 +172,7 @@ window.saveGroupSchedule = async function(gid) {
 
   // Avtomatik keyingi dars hisoblash
   const nextDt = computeNextClassDt(days, time);
-  const nextDtStr = nextDt ? nextDt.toISOString().slice(0,16) : '';
+  const nextDtStr = nextDt ? toLocalISOStr(nextDt) : '';
 
   DATA.groups[gid].schedule    = sch;
   DATA.groups[gid].classTime   = time;
@@ -251,7 +255,7 @@ function checkGuestPostsDot() {
     // Yangi hisobla
     const next = computeNextClassDt(days, time);
     if (!next) return;
-    const nextStr = next.toISOString().slice(0, 16);
+    const nextStr = toLocalISOStr(next);
     group.nextClassDt = nextStr;
     try { fbUpdate('groups/' + gid, { nextClassDt: nextStr }); } catch(e) {}
   }

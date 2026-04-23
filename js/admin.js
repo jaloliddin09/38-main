@@ -24,7 +24,7 @@ function renderAdminHome() {
         let ndt = g.nextClassDt || '';
         if (!ndt && g.classDays && g.classDays.length && g.classTime) {
           const auto = computeNextClassDt(g.classDays, g.classTime);
-          if (auto) ndt = auto.toISOString().slice(0,16);
+          if (auto) ndt = toLocalISOStr(auto);
         }
         let diff = ndt ? (new Date(ndt) - new Date()) : -1;
         const schedLbl = g.schedule || (g.classTime ?

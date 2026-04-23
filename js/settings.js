@@ -55,6 +55,37 @@ function applySettings() {
   }
   const sbg = document.getElementById('set-bg-url');
   if (sbg) sbg.value = bgUrl;
+
+  // Logo rasmi
+  const logoUrl = DATA.settings.logoUrl || '';
+  const logoIds = [
+    { img: 'login-logo-img',  emoji: 'login-logo-emoji' },
+    { img: 'admin-logo-img',  emoji: 'admin-logo-emoji' },
+    { img: 'parent-logo-img', emoji: 'parent-logo-emoji' }
+  ];
+  logoIds.forEach(function(ids) {
+    const imgEl   = document.getElementById(ids.img);
+    const emojEl  = document.getElementById(ids.emoji);
+    if (!imgEl) return;
+    if (logoUrl) {
+      imgEl.src = logoUrl;
+      imgEl.style.display = 'block';
+      if (emojEl) emojEl.style.display = 'none';
+    } else {
+      imgEl.style.display = 'none';
+      if (emojEl) emojEl.style.display = '';
+    }
+  });
+  const slgo = document.getElementById('set-logo-url');
+  if (slgo) slgo.value = logoUrl;
+
+  // Canvas animatsiya
+  const bgAnim = DATA.settings.bgAnim !== false; // default: yoqiq
+  const animChk = document.getElementById('set-bg-anim');
+  if (animChk) animChk.checked = bgAnim;
+  const canvas = document.getElementById('bg-canvas');
+  if (canvas) canvas.style.display = bgAnim ? 'block' : 'none';
+
   // Update pwa-app-name
   const pan = document.getElementById('pwa-app-name');
   if (pan) pan.textContent = n;

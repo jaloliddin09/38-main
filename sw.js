@@ -3,7 +3,7 @@
 // ║  YANGILASH: CACHE_NAME raqamini o'zgartiring            ║
 // ║  Masalan: 'jm-v3.8' → 'jm-v3.8'                        ║
 // ╚══════════════════════════════════════════════════════════╝
-const CACHE_NAME = 'jm-v202604201232';
+const CACHE_NAME = 'jm-v202604231600';
 
 // Asosiy fayllar — har doim keshda bo'ladi
 const CORE_FILES = [
@@ -29,6 +29,7 @@ const CORE_FILES = [
   './js/pwa.js',
   './js/samara.js',
   './js/profile.js',
+  './js/bg-anim.js',
 ];
 
 // /apps/ papkasidagi fayllar — har birini keshga qo'shamiz

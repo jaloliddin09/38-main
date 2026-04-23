@@ -27,6 +27,29 @@ window.clearBgUrl = async function() {
   toast('✅ Fon rasmi o\'chirildi');
 };
 
+window.saveLogoUrl = async function() {
+  const url = (document.getElementById('set-logo-url').value || '').trim();
+  DATA.settings.logoUrl = url;
+  try { await fbUpdate('settings', { logoUrl: url }); } catch(e) { saveLocal(); }
+  applySettings();
+  toast(url ? '🖼️ Logo qo\'yildi!' : '✅ Logo tozalandi');
+};
+window.clearLogoUrl = async function() {
+  DATA.settings.logoUrl = '';
+  const el = document.getElementById('set-logo-url');
+  if (el) el.value = '';
+  try { await fbUpdate('settings', { logoUrl: '' }); } catch(e) { saveLocal(); }
+  applySettings();
+  toast('✅ Logo o\'chirildi');
+};
+window.saveBgAnim = async function() {
+  const val = document.getElementById('set-bg-anim').checked;
+  DATA.settings.bgAnim = val;
+  try { await fbUpdate('settings', { bgAnim: val }); } catch(e) { saveLocal(); }
+  applySettings();
+  toast(val ? '🎬 Animatsiya yoqildi' : '⏹️ Animatsiya o\'chirildi');
+};
+
 window.saveLoginTitle = async function() {
   const n = document.getElementById('set-login-title').value.trim();
   DATA.settings.loginTitle = n;
@@ -98,7 +121,7 @@ function renderParentHome() {
                 : (DATA.settings && DATA.settings.nextClassDt) ? DATA.settings.nextClassDt : '';
   if (!grpNextDt && group && group.classDays && group.classDays.length && group.classTime) {
     const auto = computeNextClassDt(group.classDays, group.classTime);
-    if (auto) grpNextDt = auto.toISOString().slice(0,16);
+    if (auto) grpNextDt = toLocalISOStr(auto);
   }
   const scheduleLabel = grpSchedule || (group && group.classTime ?
     `${(group.classDays||[]).map(d=>['Ya','Du','Se','Cho','Pay','Ju','Sha'][d]).join(',')} ${group.classTime}` :
