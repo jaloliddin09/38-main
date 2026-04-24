@@ -6,23 +6,23 @@ let _guestRankPeriod = 'today';
 let _guestSamaraPeriod = 'today';
 window.enterGuest = function() {
   document.getElementById('login').style.display = 'none';
-  document.getElementById('guest-app').style.display = 'flex';
-  document.getElementById('guest-app').querySelectorAll('.bottom-nav,.gnav-btn').forEach(n => n.style.visibility = '');
+  const gApp = document.getElementById('guest-app');
+  gApp.style.display = 'flex';
+  gApp.querySelectorAll('.bottom-nav,.gnav-btn').forEach(n => n.style.visibility = '');
   const siteName = DATA.settings?.siteName || 'MY Math!';
   const el = document.getElementById('guest-site-name');
   if (el) el.textContent = siteName;
   initLetterStatusCheck();
   const d = new Date();
-  document.getElementById('guest-date-txt').textContent =
-    d.toLocaleDateString('uz-UZ', { weekday:'long', day:'numeric', month:'long' });
-  showGuestPage('home', document.querySelector('.gnav-btn'));
-  renderGuestView('today');
+  const dateEl = document.getElementById('guest-date-txt');
+  if (dateEl) dateEl.textContent = d.toLocaleDateString('uz-UZ', { weekday:'long', day:'numeric', month:'long' });
+  // Bosh sahifani avtomatik ko'rsatish
+  const homeBtn = document.querySelector('.gnav-btn[data-page="home"]') || document.querySelector('.gnav-btn');
+  showGuestPage('home', homeBtn);
   checkGuestPostsDot();
 };
 window.showGuestPage = function(page, btn) {
   document.querySelectorAll('.guest-page').forEach(p => p.classList.remove('active'));
-  // E'lonlar dotini yashirish (ko'rildi)
-
   const el = document.getElementById('gp-' + page);
   if (el) el.classList.add('active');
   document.querySelectorAll('.gnav-btn').forEach(b => b.classList.remove('active'));
@@ -30,8 +30,10 @@ window.showGuestPage = function(page, btn) {
   if (page === 'apps') renderGuestApps();
   else if (page === 'rank') renderGuestRankPage(_guestRankPeriod);
   else if (page === 'samara') { renderGuestView(_guestSamaraPeriod||'today'); }
-  // contact page — habarlar bosh sahifada chiqadi
-  else if (page === 'home') { renderGuestView(_guestPeriod); renderGuestHomePosts(); }
+  else if (page === 'home') {
+    renderGuestView(_guestPeriod||'today');
+    renderGuestHomePosts();
+  }
 };
 window.setGuestRankPeriod = function(period, btn) {
   _guestRankPeriod = period;

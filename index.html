@@ -22,7 +22,8 @@
 <link rel="stylesheet" href="css/posts.css">
 </head>
 <body>
-<canvas id="bg-canvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;display:block"></canvas>
+<div id="bg-img" style="position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center;background-attachment:fixed;background-repeat:no-repeat;background-color:#0F172A"></div>
+<canvas id="bg-canvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;display:none"></canvas>
 <script src="js/bg-anim.js"></script>
 
 <!-- === html/loading.html === -->
@@ -137,7 +138,7 @@
           <div style="width:48px;height:48px;background:linear-gradient(135deg,#8B5CF6,#3B82F6);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;box-shadow:0 4px 16px rgba(139,92,246,.4)">📐</div>
           <div>
             <div id="guest-site-name2" style="color:#fff;font-size:1.05rem;font-weight:800;line-height:1.2">Jaloliddin Math</div>
-            <div style="color:rgba(255,255,255,.5);font-size:.75rem;margin-top:2px">O'quvchilar platformasi</div>
+            <div style="color:rgba(255,255,255,.5);font-size:.75rem;margin-top:2px" id="txt-guest-platform">O'quvchilar platformasi</div>
           </div>
         </div>
       </div>
@@ -451,9 +452,9 @@
           <div class="sr-right"><input class="sr-inp" id="set-name" placeholder="Sayt nomi"><button class="btn btn-sm btn-success" onclick="saveSettingName()">✓</button></div>
         </div>
         <div class="setting-row">
-          <div class="sr-info"><div class="sr-title">🖼️ Fon rasmi URL</div><div class="sr-desc">Cloudinary yoki boshqa rasm URL — butun sayt foniga qo'yiladi</div></div>
+          <div class="sr-info"><div class="sr-title">🖼️ Fon rasmi URL</div><div class="sr-desc">Rasm URL — butun sayt foniga qo'yiladi</div></div>
           <div class="sr-right" style="flex-direction:column;align-items:flex-end;gap:4px">
-            <input class="sr-inp" id="set-bg-url" placeholder="https://res.cloudinary.com/...">
+            <input class="sr-inp" id="set-bg-url" placeholder="https://i.postimg.cc/...">
             <div style="display:flex;gap:6px">
               <button class="btn btn-sm btn-success" onclick="saveBgUrl()">✓ Saqlash</button>
               <button class="btn btn-sm btn-ghost" onclick="clearBgUrl()">✕ O'chirish</button>
@@ -461,25 +462,43 @@
           </div>
         </div>
         <div class="setting-row">
-          <div class="sr-info"><div class="sr-title">🖼️ Logo rasmi URL</div><div class="sr-desc">Ilovaning icon o'rniga ko'rsatiladigan rasm</div></div>
-          <div class="sr-right" style="flex-direction:column;align-items:flex-end;gap:4px">
-            <input class="sr-inp" id="set-logo-url" placeholder="https://res.cloudinary.com/...">
-            <div style="display:flex;gap:6px">
-              <button class="btn btn-sm btn-success" onclick="saveLogoUrl()">✓ Saqlash</button>
-              <button class="btn btn-sm btn-ghost" onclick="clearLogoUrl()">✕ O'chirish</button>
-            </div>
+          <div class="sr-info">
+            <div class="sr-title">🖼️ Fon ko'rinishi</div>
+            <div class="sr-desc">Fon rasmi yoqilsa to'liq ko'rinadi, animatsiya bilan 40% shaffof overlay</div>
+          </div>
+          <div class="sr-right">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+              <input type="checkbox" id="set-bg-enabled" onchange="saveBgEnabled()" style="width:20px;height:20px;accent-color:#3B82F6">
+              <span style="font-size:.85rem;color:var(--text2)" id="bg-enabled-label">O'chiq</span>
+            </label>
           </div>
         </div>
         <div class="setting-row">
           <div class="sr-info">
-            <div class="sr-title">🎬 Fon + Animatsiya</div>
-            <div class="sr-desc">Fon rasmi ustida neon chiziqlar va shahar soyasi ko'rinadi</div>
+            <div class="sr-title">🎬 Animatsiya</div>
+            <div class="sr-desc">Neon to'lqinlar va shahar silueti — fon bilan 40% uyg'un</div>
           </div>
-          <div class="sr-right">
+          <div class="sr-right" style="flex-direction:column;align-items:flex-end;gap:6px">
             <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
               <input type="checkbox" id="set-bg-anim" onchange="saveBgAnim()" style="width:20px;height:20px;accent-color:#8B5CF6">
               <span style="font-size:.85rem;color:var(--text2)" id="anim-label">O'chiq</span>
             </label>
+            <div id="anim-style-wrap" style="display:none;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+              <button class="anim-style-btn" data-style="1" onclick="saveAnimStyle(1)">🌊 To'lqin</button>
+              <button class="anim-style-btn" data-style="2" onclick="saveAnimStyle(2)">✨ Zarrachalar</button>
+              <button class="anim-style-btn" data-style="3" onclick="saveAnimStyle(3)">🌆 Shahar</button>
+              <button class="anim-style-btn" data-style="4" onclick="saveAnimStyle(4)">🔮 Matrix</button>
+            </div>
+          </div>
+        </div>
+        <div class="setting-row">
+          <div class="sr-info"><div class="sr-title">🖼️ Logo rasmi URL</div><div class="sr-desc">Ilovaning icon o'rniga ko'rsatiladigan rasm</div></div>
+          <div class="sr-right" style="flex-direction:column;align-items:flex-end;gap:4px">
+            <input class="sr-inp" id="set-logo-url" placeholder="https://i.postimg.cc/...">
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-sm btn-success" onclick="saveLogoUrl()">✓ Saqlash</button>
+              <button class="btn btn-sm btn-ghost" onclick="clearLogoUrl()">✕ O'chirish</button>
+            </div>
           </div>
         </div>
         <div class="setting-row">
@@ -593,6 +612,8 @@
         <div class="edit-preview-card">
           <div class="ep-row"><span class="ep-label">Sahifa sarlavhasi</span><span class="ep-val editable" data-key="lbl_guest_hero_title" data-type="text">🎯 O'quvchilar Reytingi</span></div>
           <div class="ep-row"><span class="ep-label">Tavsif matni</span><span class="ep-val editable" data-key="lbl_subtitle" data-type="text">Professional matematika o'qituvchisi</span></div>
+          <div class="ep-row"><span class="ep-label">Platform tagmatni</span><span class="ep-val editable" data-key="lbl_platform" data-type="text">O'quvchilar platformasi</span></div>
+          <div class="ep-row"><span class="ep-label">Salomlashuv</span><span class="ep-val editable" data-key="lbl_hello" data-type="text">Xush kelibsiz</span></div>
         </div>
 
         <div class="edit-section-title">🧭 Navigatsiya nomlari</div>

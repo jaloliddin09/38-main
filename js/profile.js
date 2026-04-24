@@ -123,6 +123,9 @@ function applyLabels() {
   // Guest subtitle
   const gs = document.getElementById('txt-guest-subtitle');
   if (gs) gs.textContent = _s('lbl_subtitle', gs.textContent);
+  // Guest platform tagmatni
+  const gp = document.getElementById('txt-guest-platform');
+  if (gp) gp.textContent = _s('lbl_platform', gp.textContent);
   // Profile version
   const pv = document.getElementById('txt-prof-version');
   if (pv) pv.textContent = _s('appVersion', 'v1.4');

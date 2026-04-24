@@ -487,3 +487,10 @@ select.inp option{background:var(--bg2)}
   font-family:'Inter',sans-serif;transition:all .2s;display:flex;align-items:center;gap:4px}
 .install-btn:hover{background:var(--blue);color:#fff}
 .install-btn.installed{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--green)}
+/* Logo override */
+.icon[data-logo='1']{background-image:var(--logo-url)!important;background-size:cover!important;background-position:center!important;background-color:transparent!important;background:url(var(--logo-url-raw,none)) center/cover no-repeat!important;font-size:0!important;color:transparent!important}
+
+/* Animatsiya uslub tugmalari */
+.anim-style-btn{padding:4px 10px;border-radius:8px;border:1.5px solid rgba(139,92,246,.4);background:rgba(139,92,246,.12);color:var(--text);font-size:.78rem;cursor:pointer;transition:all .2s}
+.anim-style-btn:hover{background:rgba(139,92,246,.3);border-color:#8B5CF6}
+.anim-style-btn.active{background:rgba(139,92,246,.5);border-color:#8B5CF6;color:#fff;box-shadow:0 0 10px rgba(139,92,246,.4)}

@@ -42,12 +42,28 @@ window.clearLogoUrl = async function() {
   applySettings();
   toast('✅ Logo o\'chirildi');
 };
+window.saveBgEnabled = async function() {
+  var val = document.getElementById('set-bg-enabled').checked;
+  DATA.settings.bgEnabled = val;
+  try { await fbUpdate('settings', { bgEnabled: val }); } catch(e) { saveLocal(); }
+  applySettings();
+  toast(val ? '\uD83D\uDDBC\uFE0F Fon yoqildi' : '\u23F9\uFE0F Fon o\u02bcchirildi');
+};
+
 window.saveBgAnim = async function() {
   var val = document.getElementById('set-bg-anim').checked;
   DATA.settings.bgAnim = val;
   try { await fbUpdate('settings', { bgAnim: val }); } catch(e) { saveLocal(); }
   applySettings();
-  toast(val ? '\uD83C\uDF89 Fon+Animatsiya yoqildi' : '\u23F9\uFE0F Faqat fon rasmi');
+  toast(val ? '\uD83C\uDF89 Animatsiya yoqildi' : '\u23F9\uFE0F Animatsiya o\u02bcchirildi');
+};
+
+window.saveAnimStyle = async function(n) {
+  DATA.settings.animStyle = n;
+  try { await fbUpdate('settings', { animStyle: n }); } catch(e) { saveLocal(); }
+  applySettings();
+  var names = {1:'\uD83C\uDF0A To\u02bclqin',2:'\u2728 Zarrachalar',3:'\uD83C\uDFC5 Shahar',4:'\uD83D\uDD2E Matrix'};
+  toast(names[n] || 'Uslub almashdi');
 };
 
 window.saveLoginTitle = async function() {
