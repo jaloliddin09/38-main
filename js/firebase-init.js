@@ -11,6 +11,8 @@
   };
   firebase.initializeApp(firebaseConfig);
   var db = firebase.database();
+  var auth = firebase.auth();
+
   window._fb = {
     db: db,
     ref: function(dbOrPath, path) {
@@ -24,6 +26,24 @@
     remove: function(refObj)       { return refObj.remove(); },
     push:   function(refObj, data) { return refObj.push(data); }
   };
-  window._fbReady = true;
-  window.dispatchEvent(new Event('fbReady'));
+
+  // ── ANONYMOUS AUTH ─────────────────────────────────────────
+  // Ilova avtomatik "ko'rinmas" foydalanuvchi sifatida Firebase ga kiradi.
+  // Bu 30 kunlik test mode muammosini butunlay hal qiladi.
+  // Ota-onalar va admin hech narsani sezishmaydi — PIN tizimi o'zgarmaydi.
+  auth.onAuthStateChanged(function(user) {
+    if (user) {
+      // Allaqachon autentifikatsiya qilingan — tayyor
+      window._fbReady = true;
+      window.dispatchEvent(new Event('fbReady'));
+    } else {
+      // Anonim kirish
+      auth.signInAnonymously().catch(function(err) {
+        console.warn('Anonymous auth xato:', err.message);
+        // Auth ishlamasa ham DB ga ulanishga harakat qilamiz
+        window._fbReady = true;
+        window.dispatchEvent(new Event('fbReady'));
+      });
+    }
+  });
 })();
