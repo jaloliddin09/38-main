@@ -14,7 +14,7 @@ window.submitEnrollment = async function() {
   const data = { name, grade, phone, createdAt: nowTs(), read: false };
   if (!DATA.letters) DATA.letters = {};
   DATA.letters[lid] = data;
-  try { await fbSet('letters/' + lid, data); } catch(e) { saveLocal(); }
+  saveLocal(); fbSet('letters/' + lid, data).catch(e => console.warn('fb:', e));
   // Lid ni localStorage ga saqla (status kuzatish uchun)
   localStorage.setItem('jm_sent_letter', lid);
   // UI
@@ -79,7 +79,7 @@ window.markLetterRead = async function(lid) {
   DATA.letters[lid].read = true;
   DATA.letters[lid].acknowledged = true;
   DATA.letters[lid].acknowledgedAt = nowTs();
-  try { await fbUpdate('letters/' + lid, { read: true, acknowledged: true, acknowledgedAt: nowTs() }); } catch(e) { saveLocal(); }
+  saveLocal(); fbUpdate('letters/' + lid, { read: true, acknowledged: true, acknowledgedAt: nowTs() }).catch(e => console.warn('fb:', e));
   updateLettersBadge();
   renderAdminLetters();
   toast('✅ Qabul qilindi — yuboruvchiga xabar ketdi');
@@ -88,7 +88,7 @@ window.markLetterRead = async function(lid) {
 window.deleteLetter = async function(lid) {
   if (!confirm("Bu maktubni o'chirmoqchimisiz?")) return;
   delete DATA.letters[lid];
-  try { await fbRemove('letters/' + lid); } catch(e) { saveLocal(); }
+  saveLocal(); fbRemove('letters/' + lid).catch(e => console.warn('fb:', e));
   updateLettersBadge();
   renderAdminLetters();
 };

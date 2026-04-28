@@ -5,73 +5,84 @@ window.saveSettingName = async function() {
   const n = document.getElementById('set-name').value.trim();
   if (!n) return;
   DATA.settings.siteName = n;
-  try { await fbUpdate('settings', { siteName: n }); } catch(e) { saveLocal(); }
+  saveLocal();
   applySettings();
   const el = document.getElementById('pwa-app-name');
   if (el) el.textContent = n;
   toast('✅ Saqlandi');
+  fbUpdate('settings', { siteName: n }).catch(e => console.warn('fb:', e));
 };
 
 window.saveBgUrl = async function() {
   const url = (document.getElementById('set-bg-url').value || '').trim();
   DATA.settings.bgUrl = url;
-  try { await fbUpdate('settings', { bgUrl: url }); } catch(e) { saveLocal(); }
+  DATA.settings.bgEnabled = true;
+  saveLocal();
   applySettings();
   toast(url ? '🖼️ Fon rasmi qo\'yildi!' : '✅ Fon tozalandi');
+  fbUpdate('settings', { bgUrl: url, bgEnabled: true }).catch(e => console.warn('fb:', e));
 };
 window.clearBgUrl = async function() {
   DATA.settings.bgUrl = '';
+  DATA.settings.bgEnabled = false;
   document.getElementById('set-bg-url').value = '';
-  try { await fbUpdate('settings', { bgUrl: '' }); } catch(e) { saveLocal(); }
+  saveLocal();
   applySettings();
   toast('✅ Fon rasmi o\'chirildi');
+  fbUpdate('settings', { bgUrl: '', bgEnabled: false }).catch(e => console.warn('fb:', e));
 };
 
 window.saveLogoUrl = async function() {
   const url = (document.getElementById('set-logo-url').value || '').trim();
   DATA.settings.logoUrl = url;
-  try { await fbUpdate('settings', { logoUrl: url }); } catch(e) { saveLocal(); }
+  saveLocal();
   applySettings();
   toast(url ? '🖼️ Logo qo\'yildi!' : '✅ Logo tozalandi');
+  fbUpdate('settings', { logoUrl: url }).catch(e => console.warn('fb:', e));
 };
 window.clearLogoUrl = async function() {
   DATA.settings.logoUrl = '';
   const el = document.getElementById('set-logo-url');
   if (el) el.value = '';
-  try { await fbUpdate('settings', { logoUrl: '' }); } catch(e) { saveLocal(); }
+  saveLocal();
   applySettings();
   toast('✅ Logo o\'chirildi');
+  fbUpdate('settings', { logoUrl: '' }).catch(e => console.warn('fb:', e));
 };
 window.saveBgEnabled = async function() {
   var val = document.getElementById('set-bg-enabled').checked;
   DATA.settings.bgEnabled = val;
-  try { await fbUpdate('settings', { bgEnabled: val }); } catch(e) { saveLocal(); }
+  saveLocal();
   applySettings();
-  toast(val ? '\uD83D\uDDBC\uFE0F Fon yoqildi' : '\u23F9\uFE0F Fon o\u02bcchirildi');
+  toast(val ? '🖼️ Fon yoqildi' : '⏹️ Fon o\'chirildi');
+  fbUpdate('settings', { bgEnabled: val }).catch(e => console.warn('fb:', e));
 };
 
 window.saveBgAnim = async function() {
   var val = document.getElementById('set-bg-anim').checked;
   DATA.settings.bgAnim = val;
-  try { await fbUpdate('settings', { bgAnim: val }); } catch(e) { saveLocal(); }
+  saveLocal();
   applySettings();
-  toast(val ? '\uD83C\uDF89 Animatsiya yoqildi' : '\u23F9\uFE0F Animatsiya o\u02bcchirildi');
+  toast(val ? '🎉 Animatsiya yoqildi' : '⏹️ Animatsiya o\'chirildi');
+  fbUpdate('settings', { bgAnim: val }).catch(e => console.warn('fb:', e));
 };
 
 window.saveAnimStyle = async function(n) {
   DATA.settings.animStyle = n;
-  try { await fbUpdate('settings', { animStyle: n }); } catch(e) { saveLocal(); }
+  saveLocal();
   applySettings();
-  var names = {1:'\uD83C\uDF0A To\u02bclqin',2:'\u2728 Zarrachalar',3:'\uD83C\uDFC5 Shahar',4:'\uD83D\uDD2E Matrix'};
+  var names = {1:'🌊 To\'lqin', 2:'✨ Zarrachalar', 3:'🏅 Shahar', 4:'🔮 Matrix'};
   toast(names[n] || 'Uslub almashdi');
+  fbUpdate('settings', { animStyle: n }).catch(e => console.warn('fb:', e));
 };
 
 window.saveLoginTitle = async function() {
   const n = document.getElementById('set-login-title').value.trim();
   DATA.settings.loginTitle = n;
-  try { await fbUpdate('settings', { loginTitle: n }); } catch(e) { saveLocal(); }
+  saveLocal();
   applySettings();
   toast('✅ Kirish sarlavhasi saqlandi');
+  fbUpdate('settings', { loginTitle: n }).catch(e => console.warn('fb:', e));
 };
 
 window.saveScoringLimits = async function() {
@@ -82,41 +93,46 @@ window.saveScoringLimits = async function() {
   DATA.settings.uvMax   = uvMax;
   DATA.settings.mtMax   = mtMax;
   DATA.settings.faolMax = faolMax;
-  try { await fbUpdate('settings', { uvMax, mtMax, faolMax }); } catch(e) { saveLocal(); }
+  saveLocal();
   applySettings();
-  buildGradeForm();
+  if (typeof buildGradeForm === 'function') buildGradeForm();
   toast(`✅ UV: ${uvMax} · MT: ${mtMax} · Faollik: ${faolMax} · Jami: ${uvMax+mtMax+faolMax}`);
+  fbUpdate('settings', { uvMax, mtMax, faolMax }).catch(e => console.warn('fb:', e));
 };
 
 window.saveVersion = async function() {
   const v = document.getElementById('set-version').value.trim();
   if (!v) return;
   DATA.settings.appVersion = v;
-  try { await fbUpdate('settings', { appVersion: v }); } catch(e) { saveLocal(); }
+  saveLocal();
   applySettings();
   toast('✅ Versiya saqlandi');
+  fbUpdate('settings', { appVersion: v }).catch(e => console.warn('fb:', e));
 };
 window.saveSettingPass = async function() {
   const p = document.getElementById('set-pass').value;
   if (!p || p.length < 3) { toast('❌ Kamida 3 belgi!'); return; }
   DATA.settings.adminPass = p;
-  try { await fbUpdate('settings', { adminPass: p }); } catch(e) { saveLocal(); }
+  saveLocal();
   document.getElementById('set-pass').value = '';
   toast('✅ Parol o\'zgartirildi');
+  fbUpdate('settings', { adminPass: p }).catch(e => console.warn('fb:', e));
 };
 window.saveSettingSchedule = async function() {
   const s = document.getElementById('set-schedule').value.trim();
   DATA.settings.schedule = s;
-  try { await fbUpdate('settings', { schedule: s }); } catch(e) { saveLocal(); }
+  saveLocal();
   toast('✅ Saqlandi');
+  fbUpdate('settings', { schedule: s }).catch(e => console.warn('fb:', e));
 };
 window.clearAllData = async function() {
   if (!confirm('BARCHA ma\'lumotlar o\'chadi!')) return;
   if (!confirm('Haqiqatan ham?')) return;
-  DATA = { groups:{}, videos:{}, settings:{ adminPass:'sara', siteName:'Jaloliddin Math', schedule:'' } };
-  try { await fbSet('/', DATA); } catch(e) { saveLocal(); }
-  logout();
+  DATA = { groups:{}, videos:{}, notifications:{}, posts:{}, apps:{}, letters:{}, settings:{ adminPass:'sara', siteName:'Jaloliddin Math', schedule:'', uvMax:50, mtMax:25, faolMax:25 } };
+  saveLocal();
   toast('🗑️ Tozalandi');
+  fbSet('/', DATA).catch(e => console.warn('fb:', e));
+  logout();
 };
 
 // ============================================================
@@ -253,7 +269,7 @@ window.closeVideoModal = function() {
 window.saveSettingNextDt = async function() {
   const v = document.getElementById('set-nextdt').value;
   DATA.settings.nextClassDt = v;
-  try { await fbUpdate('settings', { nextClassDt: v }); } catch(e) { saveLocal(); }
+  saveLocal(); fbUpdate('settings', { nextClassDt: v }).catch(e => console.warn('fb:', e));
   toast('✅ Dars vaqti saqlandi');
 };
 

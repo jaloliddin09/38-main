@@ -178,17 +178,15 @@ window.saveGroupSchedule = async function(gid) {
   DATA.groups[gid].classTime   = time;
   DATA.groups[gid].nextClassDt = nextDtStr;
 
-  try {
-    await fbUpdate('groups/' + gid, {
-      schedule:    sch,
-      classTime:   time,
-      classDays:   days,
-      nextClassDt: nextDtStr
-    });
-  } catch(e) { saveLocal(); }
-
+  saveLocal();
   computeAndPreviewNext(gid);
   toast('✅ Jadval saqlandi — keyingi dars avtomatik hisoblandi');
+  fbUpdate('groups/' + gid, {
+    schedule:    sch,
+    classTime:   time,
+    classDays:   days,
+    nextClassDt: nextDtStr
+  }).catch(e => console.warn('fb:', e));
 };
 
 // ============================================================

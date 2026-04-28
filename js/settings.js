@@ -26,10 +26,13 @@ function applySettings() {
   var dm=document.getElementById('set-mt-desc');   if(dm) dm.textContent='Hozir: '+mtMax+' ball';
   var df=document.getElementById('set-faol-desc'); if(df) df.textContent='Hozir: '+faolMax+' ball \xb7 Jami: '+(uvMax+mtMax+faolMax);
 
-  // ── LOGO ──
+  // ── LOGO ── preload qilib keyin qo'yamiz
   var logoUrl = s.logoUrl || '';
   var root = document.documentElement;
   if(logoUrl){
+    // Preload
+    var logoPreload = new Image();
+    logoPreload.src = logoUrl;
     root.style.setProperty('--logo-url', 'url('+logoUrl+')');
     root.style.setProperty('--logo-url-raw', logoUrl);
   } else {
@@ -58,11 +61,26 @@ function applySettings() {
   var bgImg      = document.getElementById('bg-img');
   var canvas     = document.getElementById('bg-canvas');
 
-  // bg-img
+  // bg-img — preload qilib keyin qo'yamiz (kesh muammosini hal qiladi)
   if(bgImg){
     if(bgUrl && bgEnabled){
-      bgImg.style.backgroundImage = 'url('+bgUrl+')';
-      bgImg.style.opacity = bgAnim ? '1' : '1'; // har doim 1, overlay canvas da
+      // Avval preload Image ob'ekti orqali yuklaymiz
+      var preloader = new Image();
+      preloader.onload = function() {
+        bgImg.style.backgroundImage = 'url('+bgUrl+')';
+        bgImg.style.opacity = '1';
+      };
+      preloader.onerror = function() {
+        // URL ishlamasa ham qo'yib yuboramiz
+        bgImg.style.backgroundImage = 'url('+bgUrl+')';
+      };
+      // Agar keshda bo'lsa — darhol ishlaydi
+      if(bgImg.style.backgroundImage === 'url("'+bgUrl+'")' || bgImg.style.backgroundImage === 'url('+bgUrl+')'){
+        // Allaqachon qo'yilgan, hech narsa qilmaymiz
+      } else {
+        bgImg.style.backgroundImage = 'url('+bgUrl+')'; // darhol qo'y
+        preloader.src = bgUrl;
+      }
     } else {
       bgImg.style.backgroundImage = '';
     }
@@ -70,8 +88,14 @@ function applySettings() {
 
   // canvas
   if(canvas){
+    var wasHidden = canvas.style.display === 'none';
     canvas.style.display = bgAnim ? 'block' : 'none';
     canvas.dataset.style = animStyle;
+    // Animatsiya uslubi o'zgarganda yoki canvas endi ko'ringanda qayta qurish
+    if(bgAnim && (wasHidden || canvas._lastStyle != animStyle)) {
+      canvas._lastStyle = animStyle;
+      if(window.bgAnimRestart) setTimeout(window.bgAnimRestart, 50);
+    }
   }
 
   // Body va ekranlar shaffof

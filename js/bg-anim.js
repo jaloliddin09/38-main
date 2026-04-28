@@ -254,4 +254,12 @@
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
   else init();
+
+  // Tashqaridan chaqirish uchun — applySettings dan foydalaniladi
+  window.bgAnimRestart = function() {
+    var c = document.getElementById('bg-canvas');
+    if (!c) return;
+    if (c.style.display === 'none') return;
+    buildAll();
+  };
 })();

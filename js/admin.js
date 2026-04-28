@@ -298,20 +298,12 @@ window.addGroup = async function() {
   if (!name) { errEl.textContent='Guruh nomini kiriting!'; errEl.style.display='block'; return; }
   const gid = genId();
   DATA.groups[gid] = { name, createdAt: nowTs(), students: {} };
-  try {
-    await fbSet('groups/' + gid, { name, createdAt: nowTs(), students: {} });
-    closeModal('m-addgroup');
-    renderGroups();
-    populateGroupSelects();
-    toast('✅ Guruh qo\'shildi');
-  } catch(e) {
-    // Offline: save locally
-    saveLocal();
-    closeModal('m-addgroup');
-    renderGroups();
-    populateGroupSelects();
-    toast('✅ Guruh qo\'shildi (oflayn)');
-  }
+  saveLocal();
+  closeModal('m-addgroup');
+  renderGroups();
+  populateGroupSelects();
+  toast('✅ Guruh qo\'shildi');
+  fbSet('groups/' + gid, { name, createdAt: nowTs(), students: {} }).catch(e => console.warn('fb:', e));
 };
 
 window.openEditGroup = function(gid) {
@@ -327,22 +319,24 @@ window.updateGroup = async function() {
   const name = document.getElementById('meg-name').value.trim();
   if (!name) return;
   DATA.groups[gid].name = name;
-  try { await fbUpdate('groups/' + gid, { name }); } catch(e) { saveLocal(); }
+  saveLocal();
   closeModal('m-editgroup');
   renderGroups();
   populateGroupSelects();
   toast('✅ Yangilandi');
+  fbUpdate('groups/' + gid, { name }).catch(e => console.warn('fb:', e));
 };
 
 window.deleteGroup = async function() {
   const gid = document.getElementById('meg-id').value;
   if (!confirm('Guruhni va barcha o\'quvchilarni o\'chirmoqchimisiz?')) return;
   delete DATA.groups[gid];
-  try { await fbRemove('groups/' + gid); } catch(e) { saveLocal(); }
+  saveLocal();
   closeModal('m-editgroup');
   renderGroups();
   populateGroupSelects();
   toast('🗑️ Guruh o\'chirildi');
+  fbRemove('groups/' + gid).catch(e => console.warn('fb:', e));
 };
 
 window.openAddStudent = function(gid) {
@@ -371,10 +365,11 @@ window.addStudent = async function() {
   if (!DATA.groups[gid]) DATA.groups[gid] = { name:'', students:{} };
   if (!DATA.groups[gid].students) DATA.groups[gid].students = {};
   DATA.groups[gid].students[sid] = stuData;
-  try { await fbSet(`groups/${gid}/students/${sid}`, stuData); } catch(e) { saveLocal(); }
+  saveLocal();
   closeModal('m-addstu');
   renderGroups();
   toast('✅ O\'quvchi qo\'shildi');
+  fbSet(`groups/${gid}/students/${sid}`, stuData).catch(e => console.warn('fb:', e));
 };
 
 window.openEditStudent = function(sid, gid) {
@@ -416,10 +411,11 @@ window.updateStudent = async function() {
   // If admin changes pin, clear parent-change flag
   DATA.groups[gid].students[sid].pinChangedBy = 'admin';
   DATA.groups[gid].students[sid].pinChangedAt = null;
-  try { await fbUpdate(`groups/${gid}/students/${sid}`, { name, pin, pinChangedBy: 'admin', pinChangedAt: null }); } catch(e) { saveLocal(); }
+  saveLocal();
   closeModal('m-editstu');
   renderGroups();
   toast('✅ Yangilandi');
+  fbUpdate(`groups/${gid}/students/${sid}`, { name, pin, pinChangedBy: 'admin', pinChangedAt: null }).catch(e => console.warn('fb:', e));
 };
 
 window.deleteStudent = async function() {
@@ -427,10 +423,11 @@ window.deleteStudent = async function() {
   const gid = document.getElementById('mes-groupid').value;
   if (!confirm('O\'quvchini o\'chirmoqchimisiz?')) return;
   delete DATA.groups[gid].students[sid];
-  try { await fbRemove(`groups/${gid}/students/${sid}`); } catch(e) { saveLocal(); }
+  saveLocal();
   closeModal('m-editstu');
   renderGroups();
   toast('🗑️ O\'chirildi');
+  fbRemove(`groups/${gid}/students/${sid}`).catch(e => console.warn('fb:', e));
 };
 
 // ============================================================
@@ -577,12 +574,10 @@ window.saveGrades = async function() {
     DATA.groups[gid].students[sid].records[date] = record;
   }
 
-  try {
-    await fbUpdate('/', updates);
-  } catch(e) { saveLocal(); }
-
+  saveLocal();
   buildGradeForm();
   toast(`✅ ${Object.keys(gradeMap).length} o'quvchi bahosi saqlandi`);
+  fbUpdate('/', updates).catch(e => console.warn('fb:', e));
 };
 
 function renderGradeHistory(gid, currentDate) {
@@ -634,10 +629,10 @@ window.toggleDayCount = async function(gid, date, counted) {
         removes.push(fbRemove(`groups/${gid}/students/${sid}/records/${date}`));
       }
     }
-    // UI ni darhol yangilaymiz (Firebase kutmasdan) - onValue qayta tiklamamaslik uchun
+    saveLocal();
     buildGradeForm();
     toast('🗑️ Kun o\'chirildi');
-    try { await Promise.all(removes); } catch(e) { saveLocal(); }
+    Promise.all(removes).catch(e => console.warn('fb:', e));
   } else {
     // Tiklash (agar kerak bo'lsa)
     const updates = {};
@@ -649,9 +644,10 @@ window.toggleDayCount = async function(gid, date, counted) {
         updates[`groups/${gid}/students/${sid}/records/${date}/manualOverride`] = true;
       }
     }
-    try { await fbUpdate('/', updates); } catch(e) { saveLocal(); }
+    saveLocal();
     buildGradeForm();
     toast('✅ Kun tiklandi');
+    fbUpdate('/', updates).catch(e => console.warn('fb:', e));
   }
 };
 
@@ -700,10 +696,11 @@ window.savePayment = async function() {
   const paid = document.getElementById('pay-toggle').classList.contains('on');
   const payData = { amount, date, paid };
   if (DATA.groups[gid]?.students?.[sid]) DATA.groups[gid].students[sid].payments = payData;
-  try { await fbSet(`groups/${gid}/students/${sid}/payments`, payData); } catch(e) { saveLocal(); }
+  saveLocal();
   closeModal('m-payment');
   renderPayments();
   toast('✅ To\'lov saqlandi');
+  fbSet(`groups/${gid}/students/${sid}/payments`, payData).catch(e => console.warn('fb:', e));
 };
 
 // ============================================================
@@ -756,17 +753,19 @@ window.addVideo = async function() {
   const vid = genId();
   const data = { title, url, createdAt: nowTs() };
   DATA.videos[vid] = data;
-  try { await fbSet(`videos/${vid}`, data); } catch(e) { saveLocal(); }
+  saveLocal();
   document.getElementById('vid-title').value = '';
   document.getElementById('vid-url').value = '';
   renderVideos();
   toast('✅ Video qo\'shildi');
+  fbSet(`videos/${vid}`, data).catch(e => console.warn('fb:', e));
 };
 
 window.deleteVideo = async function(vid) {
   if (!confirm('Videoni o\'chirmoqchimisiz?')) return;
   delete DATA.videos[vid];
-  try { await fbRemove(`videos/${vid}`); } catch(e) { saveLocal(); }
+  saveLocal();
   renderVideos();
   toast('🗑️ Video o\'chirildi');
+  fbRemove(`videos/${vid}`).catch(e => console.warn('fb:', e));
 };

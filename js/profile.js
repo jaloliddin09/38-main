@@ -151,7 +151,7 @@ window.setFontSize = async function(size, btn) {
     const b = document.getElementById('fsz-' + s);
     if (b) b.className = 'btn btn-sm' + (s === size ? ' btn-primary' : '');
   });
-  try { await fbUpdate('settings', { label_fontsize: size }); } catch(e) { saveLocal(); }
+  saveLocal(); fbUpdate('settings', { label_fontsize: size }).catch(e => console.warn('fb:', e));
   toast('✅ Hajm saqlandi');
 };
 
@@ -172,7 +172,7 @@ window.saveLabels = async function() {
     clr_att:         g('sc-att')         || '#10B981',
   };
   Object.assign(DATA.settings, updates);
-  try { await fbUpdate('settings', updates); } catch(e) { saveLocal(); }
+  saveLocal(); fbUpdate('settings', updates).catch(e => console.warn('fb:', e));
   applyLabels();
   toast('✅ Sozlamalar saqlandi');
 };
@@ -216,7 +216,7 @@ function renderEditPanel() {
 window.epSetFsz = async function(size, btn) {
   document.querySelectorAll('.ep-fsz').forEach(b => b.classList.toggle('active', b.dataset.size === size));
   DATA.settings.label_fontsize = size;
-  try { await fbUpdate('settings', { label_fontsize: size }); } catch(e) { saveLocal(); }
+  saveLocal(); fbUpdate('settings', { label_fontsize: size }).catch(e => console.warn('fb:', e));
   if (typeof applyLabels === 'function') applyLabels();
   toast('✅ Hajm saqlandi');
 };
@@ -280,7 +280,7 @@ window.epSavePopover = async function() {
   document.querySelectorAll('#ap-edit .editable[data-key="'+_epCurrentKey+'"]').forEach(el => {
     el.textContent = val;
   });
-  try { await fbUpdate('settings', { [_epCurrentKey]: val }); } catch(e) { saveLocal(); }
+  saveLocal(); fbUpdate('settings', { [_epCurrentKey]: val }).catch(e => console.warn('fb:', e));
   if (typeof applyLabels === 'function') applyLabels();
   epClosePopover();
   toast('✅ Saqlandi');

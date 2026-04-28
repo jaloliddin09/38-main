@@ -126,7 +126,7 @@ window.addApp = async function() {
   const appData = { name, icon, url, desc, openType, createdAt: nowTs() };
   if (!DATA.apps) DATA.apps = {};
   DATA.apps[id] = appData;
-  try { await fbSet('apps/' + id, appData); } catch(e) { saveLocal(); }
+  saveLocal(); fbSet('apps/' + id, appData).catch(e => console.warn('fb:', e));
   document.getElementById('app-name').value = '';
   document.getElementById('app-icon').value = '';
   document.getElementById('app-url').value = '';
@@ -140,5 +140,5 @@ window.deleteApp = async function(id) {
   delete DATA.apps[id];
   renderAdminApps(); // darhol UI yangilansin
   toast('🗑️ O\'chirildi');
-  try { await fbRemove(`apps/${id}`); } catch(e) { saveLocal(); }
+  saveLocal(); fbRemove(`apps/${id}`).catch(e => console.warn('fb:', e));
 };
